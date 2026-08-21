@@ -89,22 +89,13 @@ module RubocopTodoSplit
 
     def run_refresh(project_root, todo_path, output_dir, department)
       split_file = File.join(output_dir, "#{department}.yml")
-      backup     = "#{split_file}.bak"
 
-      # Hide the existing split file so rubocop doesn't see it as already configured
-      if !@options[:dry_run] && File.exist?(split_file)
-        FileUtils.mv(split_file, backup)
-      end
+      # Remove the existing split file so rubocop generates a clean slate
+      FileUtils.rm_f(split_file) unless @options[:dry_run]
 
-      success = run_rubocop_regen(project_root, only: department)
-
-      unless success
-        FileUtils.mv(backup, split_file) if File.exist?(backup)
-        return 1
-      end
+      return 1 unless run_rubocop_regen(project_root, only: department)
 
       unless File.exist?(todo_path)
-        FileUtils.mv(backup, split_file) if File.exist?(backup)
         warn "#{TODO_FILE} not found after regen — nothing to refresh"
         return 1
       end
@@ -114,9 +105,7 @@ module RubocopTodoSplit
 
       if entries.empty?
         puts "No offenses found for #{department} — nothing to write"
-        FileUtils.mv(backup, split_file) if File.exist?(backup)
       else
-        FileUtils.rm_f(backup)
         writer = Writer.new(
           entries,
           file_header: result.file_header,
