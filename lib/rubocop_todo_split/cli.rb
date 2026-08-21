@@ -80,8 +80,11 @@ module RubocopTodoSplit
       puts "Running: #{cmd.sub(/.*&& /, "")}"
       return true if @options[:dry_run]
 
-      unless system(cmd)
-        warn "rubocop --auto-gen-config failed"
+      system(cmd)
+
+      todo_path = File.join(project_root, TODO_FILE)
+      unless File.exist?(todo_path)
+        warn "rubocop --auto-gen-config failed: #{TODO_FILE} was not created"
         return false
       end
       true
