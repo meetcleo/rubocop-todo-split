@@ -90,8 +90,11 @@ module RubocopTodoSplit
     def run_refresh(project_root, todo_path, output_dir, department)
       split_file = File.join(output_dir, "#{department}.yml")
 
-      # Remove the existing split file so rubocop generates a clean slate
-      FileUtils.rm_f(split_file) unless @options[:dry_run]
+      # Clear the existing split file so rubocop generates a clean slate.
+      # We can't delete it — .rubocop.yml lists it in inherit_from and rubocop
+      # would fail to load a missing file. An empty file is loadable but has no
+      # configuration, so rubocop treats all cops in this department as unconfigured.
+      File.write(split_file, "") unless @options[:dry_run]
 
       return 1 unless run_rubocop_regen(project_root, only: department)
 
