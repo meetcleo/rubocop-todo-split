@@ -89,10 +89,9 @@ RSpec.describe RubocopTodoSplit::Writer do
     context "when .rubocop.yml has no existing inherit_from" do
       before { File.write(rubocop_path, "AllCops:\n  NewCops: enable\n") }
 
-      it "prepends the inherit_from block" do
+      it "prepends the inherit_from block with a trailing blank line" do
         content = writer.update_rubocop_yml(rubocop_path, ["rubocop_todo/Style.yml", "rubocop_todo/Layout.yml"])
-        expect(content).to include("inherit_from:")
-        expect(content).to include("  - rubocop_todo/Style.yml")
+        expect(content).to include("  - rubocop_todo/Layout.yml\n\nAllCops:")
       end
     end
 
@@ -101,10 +100,10 @@ RSpec.describe RubocopTodoSplit::Writer do
         File.write(rubocop_path, "inherit_from:\n  - old.yml\n\nAllCops:\n  NewCops: enable\n")
       end
 
-      it "replaces the existing inherit_from block" do
+      it "replaces the existing inherit_from block with a trailing blank line" do
         content = writer.update_rubocop_yml(rubocop_path, ["rubocop_todo/Style.yml"])
         expect(content).not_to include("old.yml")
-        expect(content).to include("  - rubocop_todo/Style.yml")
+        expect(content).to include("  - rubocop_todo/Style.yml\n\nAllCops:")
       end
     end
   end

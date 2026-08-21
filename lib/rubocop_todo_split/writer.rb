@@ -29,13 +29,13 @@ module RubocopTodoSplit
 
       content = File.read(rubocop_path)
       inherit_lines = department_files.map { |f| "  - #{f}" }.join("\n")
-      new_inherit = "inherit_from:\n#{inherit_lines}"
+      new_inherit = "inherit_from:\n#{inherit_lines}\n"
 
       updated =
         if content.match?(/^inherit_from:/m)
           content.gsub(/^inherit_from:.*?(?=\n\S|\z)/m, new_inherit)
         else
-          "#{new_inherit}\n\n#{content}"
+          "#{new_inherit}\n#{content}"
         end
 
       File.write(rubocop_path, updated) unless @dry_run
