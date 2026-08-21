@@ -3,8 +3,8 @@ require_relative "lib/rubocop_todo_split/version"
 Gem::Specification.new do |spec|
   spec.name = "rubocop-todo-split"
   spec.version = RubocopTodoSplit::VERSION
-  spec.authors = ["Camila Pablo"]
-  spec.email = ["camila.pablo@meetcleo.com"]
+  spec.authors = ["Cleo"]
+  spec.email = ["engineering@meetcleo.com"]
 
   spec.summary = "Split .rubocop_todo.yml into per-department YAML files"
   spec.description = <<~DESC
